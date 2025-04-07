@@ -1,49 +1,70 @@
 from configuracoes import *
 from player import Player
 from sprites import *
-
+from grupos import TodosSprites
+from os.path import join
 from random import randint
 
 class Jogo:
     def __init__(self):
         pygame.init()
-        self.tela_interface = pygame.display.set_mode((LARGURA_TELA,ALTURA_TELA))
-        pygame.display.set_caption("jogo cabloco")
+        self.tela_interface = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+        pygame.display.set_caption("Cabloquinho")
         self.relogio = pygame.time.Clock()
         self.rodando = True
 
-        #grupos
-        self.todos_sprites = pygame.sprite.Group()
+        # Grupos
+        self.todos_sprites = TodosSprites()
         self.colisao_sprites = pygame.sprite.Group()
 
-        #sprites
-        self.player = Player((400,300), self.todos_sprites, self.colisao_sprites)
-        for i in range(6):
-            x, y = randint( 0, LARGURA_TELA), randint (0, ALTURA_TELA)
-            l,a = randint(60,100), randint(50,100)
-            ColisaoSprite((x,y),(a,l),(self.todos_sprites,self.colisao_sprites))
+        # Background grande
+        self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
+        self.fundo = pygame.transform.scale(self.fundo, (1600, 1200))  
+
+        # Sprites
+        bg_width, bg_height = self.fundo.get_size()
+        self.player = Player((400, 300), self.todos_sprites, self.colisao_sprites, (bg_width, bg_height))
+        for i in range(15):
+            x, y = randint(0, 1600), randint(0, 1200)
+            ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
 
     def rodar(self):
-        while self.rodando: 
-            #dt
-            dt = self.relogio.tick(20)
+        while self.rodando:
+            dt = self.relogio.tick(60)
 
-            #loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.rodando = False
 
-            #atualizar
-            self.todos_sprites.update(dt) 
+            # Atualiza lógica
+            self.todos_sprites.update(dt)
 
-            #atualizando frames
-            self.tela_interface.fill('black')
-            self.todos_sprites.draw(self.tela_interface)
+            # Câmera: centraliza o player
+            offset_x = self.player.rect.centerx - LARGURA_TELA // 6
+            offset_y = self.player.rect.centery - ALTURA_TELA // 6
+
+            # Limites do background
+            bg_width, bg_height = self.fundo.get_size()
+
+            # Limita o offset para não mostrar fora da imagem
+            offset_x = max(0, min(offset_x, bg_width - LARGURA_TELA))
+            offset_y = max(0, min(offset_y, bg_height - ALTURA_TELA))
+
+            offset = pygame.Vector2(offset_x, offset_y)
+
+            # Desenha background com offset
+            self.tela_interface.blit(self.fundo, (-offset.x, -offset.y))
+
+            # Desenha sprites com offset
+            for sprite in self.todos_sprites:
+                self.tela_interface.blit(sprite.image, sprite.rect.topleft - offset)
+
             pygame.display.update()
 
         pygame.quit()
 
+
+
 if __name__ == '__main__':
-    jogo= Jogo()
+    jogo = Jogo()
     jogo.rodar()
-    

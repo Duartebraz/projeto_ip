@@ -5,7 +5,7 @@ from os.path import join
 class Monstros(pygame.sprite.Sprite): 
     def __init__(self, pos, *groups, alvo, velocidade, vida, nome, colisao_sprites):
         super().__init__(*groups)
-        self.image = pygame.image.load(join('images', 'monstros', nome, '0.png')).convert_alpha()
+        self.image = pygame.image.load(join('images', 'enemys', nome, '0.png')).convert_alpha()
         self.rect =  self.image.get_rect(center = pos)
         self.hitbox_rect = self.rect.inflate(0,0)
         self.direcao = pygame.Vector2()
@@ -64,4 +64,4 @@ class Perna(Monstros):
 
 class Monstro3(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 14, vida = 2, nome = 'monstro3', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 14, vida = 2, nome = 'bilisome', colisao_sprites=colisao_sprites)

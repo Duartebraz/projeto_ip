@@ -4,6 +4,7 @@ from sprites import *
 from grupos import TodosSprites
 from os.path import join
 from random import randint
+from arma import *
 
 class Jogo:
     def __init__(self):
@@ -24,6 +25,8 @@ class Jogo:
         # Sprites
         bg_width, bg_height = self.fundo.get_size()
         self.player = Player((400, 300), self.todos_sprites, self.colisao_sprites, (bg_width, bg_height))
+        self.arma = Arma(self.player, self.todos_sprites)
+
         for i in range(15):
             x, y = randint(0, 1600), randint(0, 1200)
             ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
@@ -38,6 +41,7 @@ class Jogo:
 
             # Atualiza lógica
             self.todos_sprites.update(dt)
+            self.arma.update()
 
             # Câmera: centraliza o player
             offset_x = self.player.rect.centerx - LARGURA_TELA // 6

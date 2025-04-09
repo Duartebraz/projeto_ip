@@ -15,7 +15,7 @@ class Monstros(pygame.sprite.Sprite):
         self.colisao_sprites = colisao_sprites
 
     def seguir_alvo(self):
-        vetor_para_player = self.alvo.hitbox_rect.center - self.hitbox_rect.center
+        vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
         if vetor_para_player.magnitude() != 0:
             self.direcao = vetor_para_player.normalize()
         for sprite in self.groups()[0]:

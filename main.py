@@ -35,16 +35,14 @@ class Jogo:
 
         self.monstros = pygame.sprite.Group()
 
-        for i in range(3):
-            x, y = randint(100, 1500), randint(100, 1100)
-            Galega((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites())
+        x, y = randint(100, 1500), randint(100, 1100)
 
-        for i in range(2):
-            x, y = randint(100, 1500), randint(100, 1100)
-            Perna((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites())
-        for i in range(2):
-            x, y = randint(100, 1500), randint(100, 1100)
-            Monstro3((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites())
+        Galega((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
+
+        Perna((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
+            
+        Monstro3((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
+    
     def rodar(self):
         while self.rodando:
             dt = self.relogio.tick(60)

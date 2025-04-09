@@ -15,7 +15,18 @@ class Monstros(pygame.sprite.Sprite):
         self.colisao_sprites = colisao_sprites
 
     def seguir_alvo(self):
-        h
+        vetor_para_player = self.alvo.hitbox_rect.center - self.hitbox_rect.center
+        if vetor_para_player.magnitude() != 0:
+            self.direcao = vetor_para_player.normalize()
+        for sprite in self.groups()[0]:
+            if sprite != self and isinstance(sprite, Monstros):
+                distancia = pygame.Vector2(self.hitbox_rect.center).distance_to(sprite.hitbox_rect.center)
+                if distancia < 30:
+                    direcao_repelente = pygame.Vector2(self.hitbox_rect.center) - pygame.Vector2(sprite.hitbox_rect.center)
+                    if direcao_repelente.length() != 0:
+                        self.direcao += direcao_repelente.normalize() * 0.3
+        if self.direcao.magnitude() != 0:
+            self.direcao = self.direcao.normalize()
 
     def movimentar(self):
         self.hitbox_rect.x += self.direcao.x * self.velocidade
@@ -45,12 +56,12 @@ class Monstros(pygame.sprite.Sprite):
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 16, vida = vida, nome = 'galega', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 16, vida = 2, nome = 'galega', colisao_sprites=colisao_sprites)
 
 class Perna(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 18, vida = vida, nome = 'perna', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 18, vida = 2, nome = 'perna', colisao_sprites=colisao_sprites)
 
 class Monstro3(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 14, vida = vida, nome = 'monstro3', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 14, vida = 2, nome = 'monstro3', colisao_sprites=colisao_sprites)

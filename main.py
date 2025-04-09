@@ -6,6 +6,7 @@ from os.path import join
 from random import randint
 from arma import *
 from pygame.math import Vector2
+from monstros import Galega, Perna, Monstro3
 
 class Jogo:
     def __init__(self):
@@ -31,6 +32,20 @@ class Jogo:
         for i in range(15):
             x, y = randint(0, 1600), randint(0, 1200)
             ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
+
+        self.monstros = pygame.sprite.Group()
+
+        for i in range(3):
+            x, y = randint(100, 1500), randint(100, 1100)
+            Galega((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites)
+
+        for i in range(2):
+            x, y = randint(100, 1500), randint(100, 1100)
+            Perna((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites)
+
+        for i in range(2):
+            x, y = randint(100, 1500), randint(100, 1100)
+            Monstro3((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites)
 
     def rodar(self):
         while self.rodando:

@@ -16,7 +16,6 @@ class Projetil(pygame.sprite.Sprite):
 
         self.velocidade = 8
         self.direcao = direcao.normalize()
-        self.grupo_inimigos = grupo_inimigos
 
     def update(self):
         self.rect.center += self.direcao * self.velocidade
@@ -25,17 +24,17 @@ class Projetil(pygame.sprite.Sprite):
             self.kill()
 
     def colidiu(self):
-        for inimigo in self.grupo_inimigos:
+        for inimigo in self.monstros:
             if inimigo.rect.colliderect(self.rect):
                 inimigo.kill()
                 self.kill()
                 break
 
 class Arma:
-    def __init__(self, jogador, grupo_sprites, grupo_inimigos):
+    def __init__(self, jogador, grupo_sprites, monstros):
         self.jogador = jogador
         self.grupo_sprites = grupo_sprites
-        self.grupo_inimigos = grupo_inimigos
+        self.monstros = monstros
         self.cooldown = 1
         self.ultimo_ataque = time()
         self.municao = 10
@@ -56,7 +55,7 @@ class Arma:
         if direcao.length() == 0:
             return
 
-        Projetil(player_pos, direcao, self.grupo_sprites, self.grupo_inimigos)
+        Projetil(player_pos, direcao, self.grupo_sprites, self.monstros)
         self.municao -= 1
 
 

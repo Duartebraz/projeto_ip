@@ -52,7 +52,7 @@ class Monstros(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.seguir_alvo()
-        self.movimentar(dt)
+        self.movimentar()
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):

@@ -56,12 +56,12 @@ class Monstros(pygame.sprite.Sprite):
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 16, vida = 2, nome = 'galega', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 12, vida = 2, nome = 'galega', colisao_sprites=colisao_sprites)
 
 class Perna(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 18, vida = 2, nome = 'perna', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 8, vida = 2, nome = 'perna', colisao_sprites=colisao_sprites)
 
 class Monstro3(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 14, vida = 2, nome = 'bilisome', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 10, vida = 2, nome = 'bilisome', colisao_sprites=colisao_sprites)

@@ -19,6 +19,7 @@ class Jogo:
         # Grupos
         self.todos_sprites = TodosSprites()
         self.colisao_sprites = pygame.sprite.Group()
+        self.monstros = pygame.sprite.Group()
 
         # Background grande
         self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
@@ -33,7 +34,6 @@ class Jogo:
             x, y = randint(0, 1600), randint(0, 1200)
             ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
 
-        self.monstros = pygame.sprite.Group()
 
         x, y = randint(100, 1500), randint(100, 1100)
 

@@ -27,7 +27,7 @@ class Monstros(pygame.sprite.Sprite):
             self.direcao = pygame.Vector2(0, 0)
 
 
-    def movimentar(self):
+    def movimentar(self, dt):
         self.hitbox_rect.x += self.direcao.x * self.velocidade
         self.colisao('horizontal')
         self.hitbox_rect.y += self.direcao.y * self.velocidade

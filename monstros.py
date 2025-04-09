@@ -16,17 +16,13 @@ class Monstros(pygame.sprite.Sprite):
 
     def seguir_alvo(self):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
-        if vetor_para_player.magnitude() != 0:
+        distancia = vetor_para_player.length()
+
+        if distancia > 40:  # Mantém uma distância segura do player
             self.direcao = vetor_para_player.normalize()
-        for sprite in self.groups()[0]:
-            if sprite != self and isinstance(sprite, Monstros):
-                distancia = pygame.Vector2(self.hitbox_rect.center).distance_to(sprite.hitbox_rect.center)
-                if distancia < 30:
-                    direcao_repelente = pygame.Vector2(self.hitbox_rect.center) - pygame.Vector2(sprite.hitbox_rect.center)
-                    if direcao_repelente.length() != 0:
-                        self.direcao += direcao_repelente.normalize() * 0.3
-        if self.direcao.magnitude() != 0:
-            self.direcao = self.direcao.normalize()
+        else:
+            self.direcao = pygame.Vector2(0, 0)  # Zera a direção, o monstro para
+
 
     def movimentar(self):
         self.hitbox_rect.x += self.direcao.x * self.velocidade

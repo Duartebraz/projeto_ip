@@ -18,10 +18,10 @@ class Monstros(pygame.sprite.Sprite):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
         distancia = vetor_para_player.length()
 
-        if distancia > 40:  # Mantém uma distância segura do player
+        if distancia > 40:
             self.direcao = vetor_para_player.normalize()
         else:
-            self.direcao = pygame.Vector2(0, 0)  # Zera a direção, o monstro para
+            self.direcao = pygame.Vector2(0, 0)
 
 
     def movimentar(self):
@@ -52,12 +52,12 @@ class Monstros(pygame.sprite.Sprite):
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 12, vida = 2, nome = 'galega', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 8, vida = 2, nome = 'galega', colisao_sprites=colisao_sprites)
 
 class Perna(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 8, vida = 2, nome = 'perna', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 6, vida = 2, nome = 'perna', colisao_sprites=colisao_sprites)
 
 class Monstro3(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 10, vida = 2, nome = 'bilisome', colisao_sprites=colisao_sprites)
+        super().__init__(pos, *groups, alvo = alvo, velocidade = 5, vida = 2, nome = 'bilisome', colisao_sprites=colisao_sprites)

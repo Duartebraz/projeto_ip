@@ -17,12 +17,22 @@ class Monstros(pygame.sprite.Sprite):
     def seguir_alvo(self):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
         distancia = vetor_para_player.length()
-
+        direcao_final = pygame.Vector2()
+        # Perseguir o player se estiver distante
         if distancia > 40:
-            self.direcao = vetor_para_player.normalize()
+            direcao_final += vetor_para_player.normalize()
+        # Repulsão de outros monstros
+        for sprite in self.groups()[0]:
+            if sprite != self and isinstance(sprite, Monstros):
+                distancia_outro = pygame.Vector2(self.hitbox_rect.center).distance_to(sprite.hitbox_rect.center)
+                if distancia_outro < 32:
+                    direcao_repelente = pygame.Vector2(self.hitbox_rect.center) - pygame.Vector2(sprite.hitbox_rect.center)
+                    if direcao_repelente.length() != 0:
+                        direcao_final += direcao_repelente.normalize() * (32 - distancia_outro) * 0.15  # repulsão suave
+        if direcao_final.length() != 0:
+            self.direcao = direcao_final.normalize()
         else:
             self.direcao = pygame.Vector2(0, 0)
-
 
     def movimentar(self):
         self.hitbox_rect.x += self.direcao.x * self.velocidade

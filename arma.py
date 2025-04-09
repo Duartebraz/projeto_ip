@@ -29,7 +29,7 @@ class Arma:
         self.ultimo_ataque = time()
         self.municao = 10
 
-   
+
     def update(self, offset):
         agora = time()
         if self.municao > 0 and agora - self.ultimo_ataque >= self.cooldown:

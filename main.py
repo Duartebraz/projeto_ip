@@ -18,6 +18,7 @@ class Jogo:
         # Grupos
         self.todos_sprites = TodosSprites()
         self.colisao_sprites = pygame.sprite.Group()
+        self.grupo_inimigos = pygame.sprite.Group()
 
         # Background grande
         self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
@@ -26,7 +27,7 @@ class Jogo:
         # Sprites
         bg_width, bg_height = self.fundo.get_size()
         self.player = Player((400, 300), self.todos_sprites, self.colisao_sprites, (bg_width, bg_height))
-        self.arma = Arma(self.player, self.todos_sprites)
+        self.arma = Arma(self.player, self.todos_sprites, self.grupo_inimigos)
 
         for i in range(15):
             x, y = randint(0, 1600), randint(0, 1200)

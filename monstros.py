@@ -46,7 +46,7 @@ class Monstros(pygame.sprite.Sprite):
 
         self.rect.center = self.hitbox_rect.center
 
-    def colisao (self, direcao):
+    def colisao(self, direcao):
         for sprite in self.colisao_sprites:
             if sprite == self:
                 continue  # ignora colisão com ele mesmo

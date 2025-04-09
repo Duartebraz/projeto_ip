@@ -4,6 +4,8 @@ from sprites import *
 from grupos import TodosSprites
 from os.path import join
 from random import randint
+from arma import *
+from pygame.math import Vector2
 
 class Jogo:
     def __init__(self):
@@ -24,6 +26,8 @@ class Jogo:
         # Sprites
         bg_width, bg_height = self.fundo.get_size()
         self.player = Player((400, 300), self.todos_sprites, self.colisao_sprites, (bg_width, bg_height))
+        self.arma = Arma(self.player, self.todos_sprites)
+
         for i in range(15):
             x, y = randint(0, 1600), randint(0, 1200)
             ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
@@ -42,6 +46,7 @@ class Jogo:
             # Câmera: centraliza o player
             offset_x = self.player.rect.centerx - LARGURA_TELA // 6
             offset_y = self.player.rect.centery - ALTURA_TELA // 6
+            
 
             # Limites do background
             bg_width, bg_height = self.fundo.get_size()
@@ -49,9 +54,8 @@ class Jogo:
             # Limita o offset para não mostrar fora da imagem
             offset_x = max(0, min(offset_x, bg_width - LARGURA_TELA))
             offset_y = max(0, min(offset_y, bg_height - ALTURA_TELA))
-
             offset = pygame.Vector2(offset_x, offset_y)
-
+            self.arma.update(offset)
             # Desenha background com offset
             self.tela_interface.blit(self.fundo, (-offset.x, -offset.y))
 

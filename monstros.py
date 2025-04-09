@@ -28,12 +28,13 @@ class Monstros(pygame.sprite.Sprite):
         if self.direcao.magnitude() != 0:
             self.direcao = self.direcao.normalize()
 
-    def movimentar(self):
-        self.hitbox_rect.x += self.direcao.x * self.velocidade
+    def movimentar(self, dt):
+        self.hitbox_rect.x += self.direcao.x * self.velocidade * dt
         self.colisao('horizontal')
-        self.hitbox_rect.y += self.direcao.y * self.velocidade
+        self.hitbox_rect.y += self.direcao.y * self.velocidade * dt
         self.colisao('vertical')
         self.rect.center = self.hitbox_rect.center
+
 
     def colisao (self, direcao):
         for sprite in self.colisao_sprites:
@@ -53,6 +54,7 @@ class Monstros(pygame.sprite.Sprite):
     def update(self, dt):
         self.seguir_alvo()
         self.movimentar(dt)
+
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):

@@ -17,29 +17,35 @@ class Monstros(pygame.sprite.Sprite):
     def seguir_alvo(self):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
         distancia = vetor_para_player.length()
+
         direcao_final = pygame.Vector2()
-        # Perseguir o player se estiver distante
+
         if distancia > 40:
             direcao_final += vetor_para_player.normalize()
-        # Repulsão de outros monstros
+        else:
+            self.direcao = pygame.Vector2(0, 0)
+            return
+
         for sprite in self.groups()[0]:
             if sprite != self and isinstance(sprite, Monstros):
                 distancia_outro = pygame.Vector2(self.hitbox_rect.center).distance_to(sprite.hitbox_rect.center)
                 if distancia_outro < 32:
                     direcao_repelente = pygame.Vector2(self.hitbox_rect.center) - pygame.Vector2(sprite.hitbox_rect.center)
                     if direcao_repelente.length() != 0:
-                        direcao_final += direcao_repelente.normalize() * (32 - distancia_outro) * 0.15  # repulsão suave
+                        direcao_final += direcao_repelente.normalize() * (32 - distancia_outro) * 0.15
+
         if direcao_final.length() != 0:
             self.direcao = direcao_final.normalize()
         else:
             self.direcao = pygame.Vector2(0, 0)
 
-    def movimentar(self):
-        self.hitbox_rect.x += self.direcao.x * self.velocidade
+    def movimentar(self, dt):
+        self.hitbox_rect.x += self.direcao.x * self.velocidade * dt
         self.colisao('horizontal')
-        self.hitbox_rect.y += self.direcao.y * self.velocidade
+        self.hitbox_rect.y += self.direcao.y * self.velocidade * dt
         self.colisao('vertical')
         self.rect.center = self.hitbox_rect.center
+
 
     def colisao (self, direcao):
         for sprite in self.colisao_sprites:
@@ -58,7 +64,8 @@ class Monstros(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.seguir_alvo()
-        self.movimentar()
+        self.movimentar(dt)
+
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites):

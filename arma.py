@@ -4,6 +4,7 @@ from os.path import join
 from time import time
 import math
 
+
 class Projetil(pygame.sprite.Sprite):
     def __init__(self, pos, direcao, grupos, grupo_inimigos, jogador):
         super().__init__(grupos)
@@ -34,13 +35,14 @@ class Projetil(pygame.sprite.Sprite):
     def colidiu(self):
         for inimigo in self.monstros:
             if inimigo == self.jogador:
-                continue  
-                #todos os tiros "batem" no personagem mas é ignorado
+                continue
+
             if inimigo.hitbox_rect.colliderect(self.rect):
-                inimigo.kill()
+                print(f"Acertou o inimigo: {inimigo.nome}")
+                inimigo.levar_dano(1)  # Chama a função correta do monstro
                 self.kill()
-                print('bateu')
                 break
+
 
 
 
@@ -62,6 +64,7 @@ class Arma:
 
     def atacar(self, offset):
         print('atirando!')
+        print(self.municao - 1)
         mouse_pos = Vector2(pygame.mouse.get_pos()) + offset
         player_pos = Vector2(self.jogador.rect.center)
     

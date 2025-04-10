@@ -124,3 +124,50 @@ class Player(pygame.sprite.Sprite):
         self.entradas()
         self.movimentacao(dt)
         self.animate()
+
+
+        
+class Pet(pygame.sprite.Sprite):
+    def __init__(self, player, grupos):
+        super().__init__(grupos)
+        self.player = player
+        self.load_frames()
+        self.frame_index = 0
+        self.animation_speed = 0.15
+        self.last_update = pygame.time.get_ticks()
+        self.image = self.frames[self.frame_index]
+        self.image = pygame.transform.scale(self.image, (30, 30))
+        self.rect = self.image.get_rect(center=self.get_follow_position())
+
+    def load_frames(self):
+        """Carrega os frames de animação do pet"""
+        path = os.path.join('images', 'player', 'chico')
+        self.frames = []
+        i = 0
+        while os.path.exists(os.path.join(path, f'{i}.png')):
+            img = pygame.image.load(os.path.join(path, f'{i}.png')).convert_alpha()
+            self.frames.append(img)
+            i += 1
+
+        if not self.frames:
+            surf = pygame.Surface((20, 20), pygame.SRCALPHA)
+            pygame.draw.circle(surf, (200, 100, 100), (10, 10), 10)
+            self.frames.append(surf)
+
+    def get_follow_position(self):
+        """Define a posição do pet baseado na posição do player"""
+        offset = pygame.Vector2(-40, 20)  # deslocamento em relação ao player
+        return self.player.rect.center + offset
+
+    def animate(self):
+        """Anima o pet"""
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_speed * 1000:
+            self.last_update = now
+            self.frame_index = (self.frame_index + 1) % len(self.frames)
+            self.image = self.frames[self.frame_index]
+            self.image = pygame.transform.scale(self.image, (30, 30))
+
+    def update(self, dt):
+        self.animate()
+        self.rect.center = self.get_follow_position()

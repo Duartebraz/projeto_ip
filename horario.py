@@ -8,10 +8,10 @@ class Horario:
 
     def atualizar(self):
         tempo_passado = time.time() - self.tempo_inicial
-        self.hora = int(tempo_passado // 10) % 8 
+        self.hora = int(tempo_passado // 10) % 8
+
     def aplicar_filtro(self, tela):
         alpha = max(0, 180 - int((self.hora / 7) * 180))
-
         filtro = pygame.Surface(tela.get_size())
         filtro.fill((0, 0, 0))
         filtro.set_alpha(alpha)
@@ -21,3 +21,7 @@ class Horario:
         fonte = pygame.font.SysFont(None, 36)
         texto = fonte.render(f"{self.hora:02d}:00", True, (255, 255, 255))
         tela.blit(texto, (10, 10))
+
+    def avancar_hora(self, horas):
+        segundos = horas * 10  # já que 10s = 1h no jogo
+        self.tempo_inicial -= segundos

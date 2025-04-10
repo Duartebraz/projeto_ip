@@ -37,6 +37,21 @@ class Jogo:
 
         self.carregar_cenario()
 
+    def mostrar_tela_inicial(self):
+        tela_inicial = pygame.image.load(join('images', 'telas', 'Start.jpeg')).convert()
+        tela_inicial = pygame.transform.scale(tela_inicial, (LARGURA_TELA, ALTURA_TELA))
+        esperando = True
+        while esperando:
+            self.tela_interface.blit(tela_inicial, (0, 0))
+            pygame.display.update()
+    
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    esperando = False
+                    self.rodando = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    esperando = False
+
     def carregar_cenario(self):
         # Background grande
         self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
@@ -86,20 +101,12 @@ class Jogo:
             tela.blit(self.imagem_vida, (x, y))
 
     def game_over(self):
-        fonte_grande = pygame.font.SysFont("Comic Sans MS", 60)
-        fonte_pequena = pygame.font.SysFont("Comic Sans MS", 28)
-
-        texto_game_over = fonte_grande.render("Game Over", True, (255, 0, 0))
-        texto_clique = fonte_pequena.render("Clique com o mouse para reiniciar", True, (255, 255, 255))
-
-        rect_game_over = texto_game_over.get_rect(center=(LARGURA_TELA // 2, ALTURA_TELA // 2 - 40))
-        rect_clique = texto_clique.get_rect(center=(LARGURA_TELA // 2, ALTURA_TELA // 2 + 40))
+        tela_final = pygame.image.load(join('images', 'telas', 'Game_Over.jpeg')).convert()
+        tela_final = pygame.transform.scale(tela_final, (LARGURA_TELA, ALTURA_TELA))
 
         esperando = True
         while esperando:
-            self.tela_interface.fill((0, 0, 0))
-            self.tela_interface.blit(texto_game_over, rect_game_over)
-            self.tela_interface.blit(texto_clique, rect_clique)
+            self.tela_interface.blit(tela_final, (0, 0))
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -119,6 +126,7 @@ class Jogo:
         self.carregar_cenario()
 
     def rodar(self):
+        self.mostrar_tela_inicial()
         while self.rodando:
             dt = self.relogio.tick(60)
 

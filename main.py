@@ -7,6 +7,7 @@ from random import randint
 from arma import *
 from pygame.math import Vector2
 from monstros import Galega, Perna, Monstro3
+from horario import Horario 
 
 class Jogo:
     def __init__(self):
@@ -40,16 +41,8 @@ class Jogo:
                     colisao_sprites=self.colisao_sprites,  # Só os obstáculos
                     limites_mapa=(bg_width, bg_height))
 
+        self.horario = Horario()
 
-        """x, y = randint(100, 1500), randint(100, 1100)
-
-        Galega((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
-
-        Perna((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
-            
-        Monstro3((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))"""
-
-    
     def rodar(self):
         while self.rodando:
             dt = self.relogio.tick(60)
@@ -58,22 +51,21 @@ class Jogo:
                 if event.type == pygame.QUIT:
                     self.rodando = False
 
-            # Atualiza lógica
             self.todos_sprites.update(dt)
+            self.horario.atualizar()  
 
             # Câmera: centraliza o player
             offset_x = self.player.rect.centerx - LARGURA_TELA // 6
             offset_y = self.player.rect.centery - ALTURA_TELA // 6
-            
 
             # Limites do background
             bg_width, bg_height = self.fundo.get_size()
-
-            # Limita o offset para não mostrar fora da imagem
             offset_x = max(0, min(offset_x, bg_width - LARGURA_TELA))
             offset_y = max(0, min(offset_y, bg_height - ALTURA_TELA))
             offset = pygame.Vector2(offset_x, offset_y)
+
             self.arma.update(offset)
+
             # Desenha background com offset
             self.tela_interface.blit(self.fundo, (-offset.x, -offset.y))
 
@@ -81,10 +73,12 @@ class Jogo:
             for sprite in self.todos_sprites:
                 self.tela_interface.blit(sprite.image, sprite.rect.topleft - offset)
 
+            self.horario.aplicar_filtro(self.tela_interface)
+            self.horario.desenhar_hora(self.tela_interface)
+
             pygame.display.update()
 
         pygame.quit()
-
 
 
 if __name__ == '__main__':

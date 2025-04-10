@@ -1,19 +1,26 @@
 import pygame
 from configuracoes import *
 from os.path import join
+from random import randint
+from drops import DropProjetil, DropVida, DropTempo
 
 class Monstros(pygame.sprite.Sprite): 
-    def __init__(self, pos, *groups, alvo, velocidade, vida, nome, colisao_sprites, limites_mapa):
+    def __init__(self, pos, *groups, alvo, velocidade, vida, nome, 
+                colisao_sprites, limites_mapa, groups_dict=None, horario=None):
         super().__init__(*groups)
         self.image = pygame.image.load(join('images', 'enemys', nome, '0.png')).convert_alpha()
-        self.rect =  self.image.get_rect(center = pos)
-        self.hitbox_rect = self.rect.inflate(0,0)
+        self.image = pygame.transform.scale(self.image, (45, 45))
+        self.rect = self.image.get_rect(center=pos)
+        self.hitbox_rect = self.rect.inflate(0, 0)
         self.direcao = pygame.Vector2()
         self.velocidade = velocidade
         self.vida = vida
         self.alvo = alvo
+        self.nome = nome
         self.colisao_sprites = colisao_sprites
         self.limites_mapa = limites_mapa
+        self.groups_dict = groups_dict or {}
+        self.horario = horario
 
     def seguir_alvo(self):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
@@ -22,10 +29,9 @@ class Monstros(pygame.sprite.Sprite):
         if distancia > 80:
             self.direcao = vetor_para_player.normalize()
         elif distancia < 60:
-            self.direcao = -vetor_para_player.normalize()  # recua um pouco
+            self.direcao = -vetor_para_player.normalize()
         else:
             self.direcao = pygame.Vector2(0, 0)
-
 
     def movimentar(self, dt):
         self.hitbox_rect.x += self.direcao.x * self.velocidade
@@ -33,7 +39,6 @@ class Monstros(pygame.sprite.Sprite):
         self.hitbox_rect.y += self.direcao.y * self.velocidade
         self.colisao('vertical')
 
-        # Limita o monstro dentro do mapa
         mapa_largura, mapa_altura = self.limites_mapa
         if self.hitbox_rect.left < 0:
             self.hitbox_rect.left = 0
@@ -49,7 +54,7 @@ class Monstros(pygame.sprite.Sprite):
     def colisao(self, direcao):
         for sprite in self.colisao_sprites:
             if sprite == self:
-                continue  # ignora colisão com ele mesmo
+                continue
 
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direcao == 'horizontal':
@@ -63,10 +68,18 @@ class Monstros(pygame.sprite.Sprite):
                     if self.direcao.y > 0:
                         self.hitbox_rect.bottom = sprite.rect.top
 
-
     def levar_dano(self, dano):
         self.vida -= dano
+        print(f"{self.nome} levou {dano} de dano. Vida restante: {self.vida}")
+
         if self.vida <= 0:
+            print(f"{self.nome} morreu.")
+            if self.nome == 'poste':
+                DropProjetil(self.rect.center, self.alvo, self.groups_dict['todos_sprites'], self.groups_dict['coletaveis'])
+            elif self.nome == 'galega':
+                DropVida(self.rect.center, self.alvo, self.groups_dict['todos_sprites'], self.groups_dict['coletaveis'])
+            elif self.nome == 'bilisome':
+                DropTempo(self.rect.center, self.alvo, self.horario, self.groups_dict['todos_sprites'], self.groups_dict['coletaveis'])
             self.kill()
 
     def update(self, dt):
@@ -74,14 +87,28 @@ class Monstros(pygame.sprite.Sprite):
         self.movimentar(dt)
 
 
+# Classes específicas de monstros:
+
 class Galega(Monstros):
-    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 5, vida = 2, nome = 'galega', colisao_sprites = colisao_sprites, limites_mapa = limites_mapa)
+    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa, groups_dict=None, horario=None):
+        super().__init__(pos, *groups, alvo=alvo, velocidade=randint(1, 2), vida=randint(1, 2),
+                        nome='galega', colisao_sprites=colisao_sprites, limites_mapa=limites_mapa,
+                        groups_dict=groups_dict, horario=horario)
 
 class Perna(Monstros):
-    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 7, vida = 2, nome = 'perna', colisao_sprites = colisao_sprites, limites_mapa = limites_mapa)
+    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa, groups_dict=None, horario=None):
+        super().__init__(pos, *groups, alvo=alvo, velocidade=randint(1, 3), vida=1,
+                        nome='perna', colisao_sprites=colisao_sprites, limites_mapa=limites_mapa,
+                        groups_dict=groups_dict, horario=horario)
 
-class Monstro3(Monstros):
-    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa):
-        super().__init__(pos, *groups, alvo = alvo, velocidade = 4, vida = 2, nome = 'bilisome', colisao_sprites = colisao_sprites, limites_mapa = limites_mapa)
+class Lobisomem(Monstros):
+    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa, groups_dict=None, horario=None):
+        super().__init__(pos, *groups, alvo=alvo, velocidade=randint(1, 2), vida=randint(1, 2),
+                        nome='bilisome', colisao_sprites=colisao_sprites, limites_mapa=limites_mapa,
+                        groups_dict=groups_dict, horario=horario)
+
+class Zepilantra(Monstros):
+    def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa, groups_dict=None, horario=None):
+        super().__init__(pos, *groups, alvo=alvo, velocidade=randint(1, 2), vida=randint(1, 2),
+                        nome='poste', colisao_sprites=colisao_sprites, limites_mapa=limites_mapa,
+                        groups_dict=groups_dict, horario=horario)

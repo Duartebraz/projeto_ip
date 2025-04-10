@@ -33,6 +33,12 @@ class Jogo:
         for i in range(15):
             x, y = randint(0, 1600), randint(0, 1200)
             ColisaoSprite((x, y), (self.todos_sprites, self.colisao_sprites))
+            for classe in (Galega, Perna, Monstro3):
+                x, y = randint(100, 1500), randint(100, 1100)
+                classe((x, y), self.todos_sprites, self.monstros,
+                    alvo=self.player,
+                    colisao_sprites=self.colisao_sprites,  # Só os obstáculos
+                    limites_mapa=(bg_width, bg_height))
 
 
         """x, y = randint(100, 1500), randint(100, 1100)
@@ -42,12 +48,6 @@ class Jogo:
         Perna((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))
             
         Monstro3((x, y), self.todos_sprites, self.monstros, alvo=self.player, colisao_sprites=self.colisao_sprites.sprites() + self.monstros.sprites(), limites_mapa=(bg_width, bg_height))"""
-        for classe in (Galega, Perna, Monstro3):
-            x, y = randint(100, 1500), randint(100, 1100)
-            classe((x, y), self.todos_sprites, self.monstros,
-                alvo=self.player,
-                colisao_sprites=self.colisao_sprites,  # Só os obstáculos
-                limites_mapa=(bg_width, bg_height))
 
     
     def rodar(self):

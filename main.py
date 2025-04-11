@@ -19,21 +19,27 @@ class Jogo:
         self.rodando = True
         self.horario = Horario()
 
-        # Vida
+        #Vida
         self.imagem_vida = pygame.image.load(join('images', 'drops', 'vida_coletavel.png')).convert_alpha()
         self.imagem_vida = pygame.transform.scale(self.imagem_vida, (30, 30))
         self.vida_jogador = 3  # começa com 3 vidas
 
-        # Grupos
+        #Grupos
         self.todos_sprites = TodosSprites()
         self.colisao_sprites = pygame.sprite.Group()
         self.monstros = pygame.sprite.Group()
         self.coletaveis = pygame.sprite.Group()
 
-        # HUD
+        #HUD
         self.imagem_municao = pygame.image.load(join('images', 'drops', 'projetil_coletavel.png')).convert_alpha()
         self.imagem_municao = pygame.transform.scale(self.imagem_municao, (38, 38))
         self.fonte = pygame.font.SysFont("Comic Sans MS", 20)
+
+        #Musica 
+        pygame.mixer.init()
+        pygame.mixer.music.load("images/som/cabloquinho.mp3")
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play(-1) #pra ficar em loop caso a jogatina seja longa
 
         self.carregar_cenario()
 
@@ -53,7 +59,7 @@ class Jogo:
                     esperando = False
 
     def carregar_cenario(self):
-        # Background grande
+        #Background grande
         self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
         self.fundo = pygame.transform.scale(self.fundo, (1600, 1200))
 
@@ -63,7 +69,7 @@ class Jogo:
             'todos_sprites': self.todos_sprites,
             'coletaveis': self.coletaveis
         }
-        self.player.jogo = self  # necessário para DropVida acessar vida_jogador
+        self.player.jogo = self  #necessário para DropVida acessar vida_jogador
 
         self.pet = Pet(self.player, self.todos_sprites)
         self.arma = Arma(self.player, self.todos_sprites, self.monstros)
@@ -137,14 +143,14 @@ class Jogo:
             self.todos_sprites.update(dt)
             self.horario.atualizar()
 
-            # Verifica dano do jogador por toque em monstros
+            #Verifica dano do jogador por toque em monstros
             if pygame.sprite.spritecollide(self.player, self.monstros, dokill=False):
                 self.vida_jogador -= 1
                 pygame.time.delay(300)
                 if self.vida_jogador <= 0:
                     self.game_over()
 
-            # Câmera: centraliza o player
+            #Câmera: centraliza o player
             offset_x = self.player.rect.centerx - LARGURA_TELA // 2
             offset_y = self.player.rect.centery - ALTURA_TELA // 2
 
@@ -156,10 +162,10 @@ class Jogo:
 
             self.arma.update(offset)
 
-            # Desenha background com offset
+            #Desenha background com offset
             self.tela_interface.blit(self.fundo, (-offset.x, -offset.y))
 
-            # Desenha sprites com offset
+            #Desenha sprites com offset
             for sprite in self.todos_sprites:
                 self.tela_interface.blit(sprite.image, sprite.rect.topleft - offset)
 

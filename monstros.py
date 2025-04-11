@@ -87,7 +87,7 @@ class Monstros(pygame.sprite.Sprite):
         self.movimentar(dt)
 
 
-# Classes específicas de monstros:
+#Classes específicas de monstros:
 
 class Galega(Monstros):
     def __init__(self, pos, *groups, alvo, colisao_sprites, limites_mapa, groups_dict=None, horario=None):

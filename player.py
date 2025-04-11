@@ -120,6 +120,19 @@ class Player(pygame.sprite.Sprite):
                     if self.direcao.y < 0: self.hitbox_rect.top = sprite.rect.bottom
                     if self.direcao.y > 0: self.hitbox_rect.bottom = sprite.rect.top
 
+    def levar_dano(self, dano):
+        agora = pygame.time.get_ticks()
+        if not hasattr(self, 'ultimo_dano'):
+            self.ultimo_dano = 0
+        if agora - self.ultimo_dano > 300:  # 1 segundo de cooldown
+            self.jogo.vida_jogador -= dano
+            print(f"Levou {dano} de dano! Vida atual: {self.jogo.vida_jogador}")
+            self.ultimo_dano = agora
+
+        if self.jogo.vida_jogador <= 0:
+            self.jogo.game_over()
+
+
     def update(self, dt):
         self.entradas()
         self.movimentacao(dt)

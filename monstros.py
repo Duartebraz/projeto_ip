@@ -21,17 +21,37 @@ class Monstros(pygame.sprite.Sprite):
         self.limites_mapa = limites_mapa
         self.groups_dict = groups_dict or {}
         self.horario = horario
+        self.ultimo_ataque = pygame.time.get_ticks()
+        self.cooldown_ataque = 1000
+        #isso é para criar um cooldown de ataque na def atacar_alvo
 
+        
     def seguir_alvo(self):
         vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
-        distancia = vetor_para_player.length()
-
-        if distancia > 80:
+        if vetor_para_player.length() != 0:
+            self.direcao = vetor_para_player.normalize()
+        else:
+            self.direcao = pygame.Vector2()
+        """vetor_para_player = pygame.Vector2(self.alvo.hitbox_rect.center) - pygame.Vector2(self.hitbox_rect.center)
+        distancia = vetor_para_player.length()"""
+        #tirei isso aqui porque quero agora que os inimigos vá pra cima e cole mesmo
+        '''if distancia > 80:
             self.direcao = vetor_para_player.normalize()
         elif distancia < 60:
             self.direcao = -vetor_para_player.normalize()
         else:
-            self.direcao = pygame.Vector2(0, 0)
+            self.direcao = pygame.Vector2(0, 0)''' 
+        #tirei isso aqui pra tentar resolver o problema dos monstros sem bater por distância
+
+    def atacar_alvo(self):
+        agora = pygame.time.get_ticks()
+        distancia = pygame.Vector2(self.alvo.hitbox_rect.center).distance_to(self.hitbox_rect.center)
+        if self.hitbox_rect.colliderect(self.alvo.hitbox_rect) or distancia <= 10:
+            if agora - self.ultimo_ataque >= self.cooldown_ataque:
+                if hasattr(self.alvo, 'levar_dano'):
+                    self.alvo.levar_dano(1)
+                    self.ultimo_ataque = agora
+
 
     def movimentar(self, dt):
         self.hitbox_rect.x += self.direcao.x * self.velocidade
@@ -85,6 +105,7 @@ class Monstros(pygame.sprite.Sprite):
     def update(self, dt):
         self.seguir_alvo()
         self.movimentar(dt)
+        self.atacar_alvo()
 
 
 #Classes específicas de monstros:

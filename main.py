@@ -144,12 +144,13 @@ class Jogo:
                 self.rodando = False
                 print("Amanheceu. O jogo terminou.")  
 
-            if pygame.sprite.spritecollide(self.player, self.monstros, False):
+            """if pygame.sprite.spritecollide(self.player, self.monstros, False):
                 self.vida_jogador -= 1
                 pygame.time.delay(300)
                 if self.vida_jogador <= 0:
-                    self.game_over()
-
+                    self.game_over()"""
+            #antigo método de delay
+            
             offset_x = self.player.rect.centerx - LARGURA_TELA // 2
             offset_y = self.player.rect.centery - ALTURA_TELA // 2
 

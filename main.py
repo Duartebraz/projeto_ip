@@ -129,6 +129,7 @@ class Jogo:
         self.colisao_sprites.empty()
         self.monstros.empty()
         self.coletaveis.empty()
+        self.horario.resetar()  
         self.carregar_cenario()
 
     def rodar(self):

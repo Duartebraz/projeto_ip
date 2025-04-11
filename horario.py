@@ -28,3 +28,6 @@ class Horario:
     def avancar_hora(self, horas):
         segundos = horas * 60 
         self.tempo_inicial -= segundos
+
+    def resetar(self):
+        self.tempo_inicial = time.time()

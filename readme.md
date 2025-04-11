@@ -53,3 +53,7 @@ grupos{
 # Desafios e aprendizados
 Como desafios, podemos destacar a gestão de tempo, tendo em vista o tempo limitado e a atenção que outras disciplinas exigiram paralelamente; a coordenação e divisão de tarefas, visto que todos não estavam habituados com a gestão de projetos; a manutenção de um código limpo e organizado, o que foi solucionado com uma quantidade satisfatória de comentários; a utilização do GitHub de maneira colaborativa.
 Como aprendizados, observamos uma boa redistribuição de tarefas, quando necessário; e a exploração da biblioteca pygame;
+
+# imagem do Jogo
+
+![Jogo](https://github.com/Duartebraz/projeto_ip/blob/main/images/telas/jogo_rodando.png)

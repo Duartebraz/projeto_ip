@@ -138,7 +138,11 @@ class Jogo:
 
             self.todos_sprites.update(dt)
             self.horario.atualizar()
-            self.spawner.atualizar()  
+            self.spawner.atualizar()
+
+            if self.horario.hora >= 7:
+                self.rodando = False
+                print("Amanheceu. O jogo terminou.")  
 
             if pygame.sprite.spritecollide(self.player, self.monstros, False):
                 self.vida_jogador -= 1

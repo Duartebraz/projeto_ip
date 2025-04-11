@@ -13,7 +13,7 @@ class DropProjetil(pygame.sprite.Sprite):
     def update(self, dt=None):
         if self.hitbox_rect.colliderect(self.jogador.hitbox_rect):
             print("Pegou o drop de munição!")
-            self.jogador.arma.municao += 4
+            self.jogador.arma.municao += 7
             self.kill()
 
 

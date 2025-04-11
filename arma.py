@@ -53,7 +53,7 @@ class Arma:
         self.monstros = monstros
         self.cooldown = 1
         self.ultimo_ataque = time()
-        self.municao = 15
+        self.municao = 20
 
     def update(self, offset):
         agora = time()

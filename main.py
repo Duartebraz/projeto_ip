@@ -8,6 +8,7 @@ from pygame.math import Vector2
 from arma import *
 from monstros import Galega, Perna, Lobisomem, Zepilantra
 from horario import Horario
+from SpawnerMonstros import SpawnerMonstros  
 
 
 class Jogo:
@@ -19,27 +20,27 @@ class Jogo:
         self.rodando = True
         self.horario = Horario()
 
-        #Vida
+        # Vida
         self.imagem_vida = pygame.image.load(join('images', 'drops', 'vida_coletavel.png')).convert_alpha()
         self.imagem_vida = pygame.transform.scale(self.imagem_vida, (30, 30))
-        self.vida_jogador = 3  # começa com 3 vidas
+        self.vida_jogador = 3
 
-        #Grupos
+        # Grupos
         self.todos_sprites = TodosSprites()
         self.colisao_sprites = pygame.sprite.Group()
         self.monstros = pygame.sprite.Group()
         self.coletaveis = pygame.sprite.Group()
 
-        #HUD
+        # HUD
         self.imagem_municao = pygame.image.load(join('images', 'drops', 'projetil_coletavel.png')).convert_alpha()
         self.imagem_municao = pygame.transform.scale(self.imagem_municao, (38, 38))
         self.fonte = pygame.font.SysFont("Comic Sans MS", 20)
 
-        #Musica 
+        # Música
         pygame.mixer.init()
         pygame.mixer.music.load("images/som/cabloquinho.mp3")
         pygame.mixer.music.set_volume(0.2)
-        pygame.mixer.music.play(-1) #pra ficar em loop caso a jogatina seja longa
+        pygame.mixer.music.play(-1)
 
         self.carregar_cenario()
 
@@ -50,7 +51,7 @@ class Jogo:
         while esperando:
             self.tela_interface.blit(tela_inicial, (0, 0))
             pygame.display.update()
-    
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     esperando = False
@@ -59,7 +60,6 @@ class Jogo:
                     esperando = False
 
     def carregar_cenario(self):
-        #Background grande
         self.fundo = pygame.image.load(join('images', 'Background.jpg')).convert()
         self.fundo = pygame.transform.scale(self.fundo, (1600, 1200))
 
@@ -69,26 +69,21 @@ class Jogo:
             'todos_sprites': self.todos_sprites,
             'coletaveis': self.coletaveis
         }
-        self.player.jogo = self  #necessário para DropVida acessar vida_jogador
+        self.player.jogo = self
 
         self.pet = Pet(self.player, self.todos_sprites)
         self.arma = Arma(self.player, self.todos_sprites, self.monstros)
         self.player.arma = self.arma
 
-        # Monstros
-        for i in range(3):
-            for classe in (Galega, Perna, Lobisomem, Zepilantra):
-                x, y = randint(100, 1500), randint(100, 1100)
-                classe((x, y), self.todos_sprites, self.monstros,
-                alvo=self.player,
-                horario=self.horario,
-                colisao_sprites=self.colisao_sprites,
-                limites_mapa=(bg_width, bg_height),
-                groups_dict={
-                    'todos_sprites': self.todos_sprites,
-                    'coletaveis': self.coletaveis
-                })
-
+        self.spawner = SpawnerMonstros(
+            horario=self.horario,
+            player=self.player,
+            todos_sprites=self.todos_sprites,
+            monstros=self.monstros,
+            colisao_sprites=self.colisao_sprites,
+            coletaveis=self.coletaveis,
+            limites_mapa=(bg_width, bg_height)
+        )
 
     def desenhar_hud_municao(self, tela):
         pos_x, pos_y = 5, 40
@@ -129,7 +124,7 @@ class Jogo:
         self.colisao_sprites.empty()
         self.monstros.empty()
         self.coletaveis.empty()
-        self.horario.resetar()  
+        self.horario.resetar()
         self.carregar_cenario()
 
     def rodar(self):
@@ -143,19 +138,17 @@ class Jogo:
 
             self.todos_sprites.update(dt)
             self.horario.atualizar()
+            self.spawner.atualizar()  
 
-            #Verifica dano do jogador por toque em monstros
-            if pygame.sprite.spritecollide(self.player, self.monstros, dokill=False):
+            if pygame.sprite.spritecollide(self.player, self.monstros, False):
                 self.vida_jogador -= 1
                 pygame.time.delay(300)
                 if self.vida_jogador <= 0:
                     self.game_over()
 
-            #Câmera: centraliza o player
             offset_x = self.player.rect.centerx - LARGURA_TELA // 2
             offset_y = self.player.rect.centery - ALTURA_TELA // 2
 
-            # Limites do background
             bg_width, bg_height = self.fundo.get_size()
             offset_x = max(0, min(offset_x, bg_width - LARGURA_TELA))
             offset_y = max(0, min(offset_y, bg_height - ALTURA_TELA))
@@ -163,10 +156,8 @@ class Jogo:
 
             self.arma.update(offset)
 
-            #Desenha background com offset
             self.tela_interface.blit(self.fundo, (-offset.x, -offset.y))
 
-            #Desenha sprites com offset
             for sprite in self.todos_sprites:
                 self.tela_interface.blit(sprite.image, sprite.rect.topleft - offset)
 

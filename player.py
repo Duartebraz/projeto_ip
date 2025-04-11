@@ -78,7 +78,7 @@ class Player(pygame.sprite.Sprite):
         """Atualiza a animação do personagem"""
         now = pygame.time.get_ticks()
         
-        # Só anima se o personagem estiver se movendo
+        #Só anima se o personagem estiver se movendo
         if self.direcao.magnitude() > 0:
             if now - self.last_update > self.animation_speed * 1000:
                 self.last_update = now

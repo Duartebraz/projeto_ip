@@ -29,6 +29,9 @@ class Jogo:
         self.colisao_sprites = pygame.sprite.Group()
         self.monstros = pygame.sprite.Group()
         self.coletaveis = pygame.sprite.Group()
+        self.qtd_monstros = {'Galega': 0, 'Perna': 0, 'Lobisomem': 0, 'Zepilantra': 0}
+        self.spawn_delay = 5000  # por exemplo, 5 segundos
+        self.ultimo_spawn = pygame.time.get_ticks()
 
         # HUD
         self.imagem_municao = pygame.image.load(join('images', 'drops', 'projetil_coletavel.png')).convert_alpha()
@@ -64,25 +67,30 @@ class Jogo:
             'coletaveis': self.coletaveis
         }
         self.player.jogo = self  # necessário para DropVida acessar vida_jogador
-
+        for classe in (Galega, Perna, Lobisomem, Zepilantra):
+            self.spawn_monstro(classe)
         self.pet = Pet(self.player, self.todos_sprites)
         self.arma = Arma(self.player, self.todos_sprites, self.monstros)
         self.player.arma = self.arma
 
-        # Monstros
-        for i in range(3):
-            for classe in (Galega, Perna, Lobisomem, Zepilantra):
-                x, y = randint(100, 1500), randint(100, 1100)
-                classe((x, y), self.todos_sprites, self.monstros,
-                alvo=self.player,
-                horario=self.horario,
-                colisao_sprites=self.colisao_sprites,
-                limites_mapa=(bg_width, bg_height),
-                groups_dict={
-                    'todos_sprites': self.todos_sprites,
-                    'coletaveis': self.coletaveis
-                })
 
+    def spawn_monstro(self, classe):
+        if classe == Galega and self.qtd_monstros['Galega'] >= 3: return
+        if classe == Perna and self.qtd_monstros['Perna'] >= 3: return
+        if classe == Lobisomem and self.qtd_monstros['Lobisomem'] >= 3: return
+        if classe == Zepilantra and self.qtd_monstros['Zepilantra'] >= 3: return
+        x, y = randint(100, 1500), randint(100, 1100)
+        classe((x, y), self.todos_sprites, self.monstros,
+            alvo=self.player,
+            horario=self.horario,
+            colisao_sprites=self.colisao_sprites,
+            limites_mapa=(1600, 1200),
+            groups_dict={
+                'todos_sprites': self.todos_sprites,
+                'coletaveis': self.coletaveis
+            })
+        nome = classe.__name__
+        self.qtd_monstros[nome] += 1
 
     def desenhar_hud_municao(self, tela):
         pos_x, pos_y = 5, 40
@@ -167,6 +175,17 @@ class Jogo:
             self.horario.desenhar_hora(self.tela_interface)
             self.desenhar_hud_municao(self.tela_interface)
             self.desenhar_hud_vida(self.tela_interface)
+
+            agora = pygame.time.get_ticks()
+            if agora - self.ultimo_spawn >= self.spawn_delay:
+                self.ultimo_spawn = agora
+                # Escolhe um tipo aleatório que ainda não chegou em 3
+                opcoes = [Galega, Perna, Lobisomem, Zepilantra]
+                opcoes = [c for c in opcoes if self.qtd_monstros[c.__name__] < 3]
+                if opcoes:
+                    from random import choice
+                    classe = choice(opcoes)
+                    self.spawn_monstro(classe)
 
             pygame.display.update()
 
